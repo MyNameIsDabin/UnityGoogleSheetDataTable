@@ -62,11 +62,17 @@ var foods = FoodsTable.Instance.Where(food => food.Price >= 1000);
 5. `[Create Table Class]`를 눌러서 코드에서 테이블 데이터에 쉽게 접근 가능하게 해주는 싱글톤 클래스 파일을 생성합니다.
 6. `[Export Binary]`를 눌러서 다운로드받은 엑셀 시트를 바이너리 파일로 변환합니다. (이거까지 눌러야 싱글톤 클래스로 바이너리 데이터를 불러와서 접근 가능)
 
-끝! 이제 코드에서 다음과 같이 테이블별 싱글톤으로 접근합니다.
-```
-// Access by Unique Key
-var firstFood = FoodsTable.Instance.GetDataById(0); 
+끝! 이제 코드에서 싱글톤으로 접근할 수 있습니다.
 
-Debug.Log(firstFood.Name);
-Debug.Log(firstFood.CanBuy);
-```
+## 엑셀 테이블 규칙
+
+사용하려는 데이터 테이블 엑셀은 다음 헤더의 규칙을 지켜야 합니다.
+
+![image](https://user-images.githubusercontent.com/26871928/218316309-fca71920-b4d0-435b-8b8a-b990f663ef83.png)
+
+첫번째 라인 : 헤더의 설명 (어떤 텍스트가 들어가도 상관 없습니다)
+두번째 라인 : 데이터의 변수로 활용될 이름
+세번째 라인 : 자료형 **int, string, float, double, bool**을 지원합니다.
+네번째 라인 : 옵션입니다. 현재는 UniqueKey만 사용 가능하며, 코드상에서 `GetDataBy[이름]` 으로 접근할 수 있게 됩니다.
+다섯번째 라인 이후 부터는 실제 데이터가 정의되면 됩니다.
+
