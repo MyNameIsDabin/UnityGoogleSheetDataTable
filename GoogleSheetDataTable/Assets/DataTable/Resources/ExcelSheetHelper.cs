@@ -196,12 +196,18 @@ public class ExcelSheetHelper : MonoBehaviour
 
                             if (rowType > RowTypeOfIndex.Type && TryGetTypeFromString(table.Rows[(int)RowTypeOfIndex.Type][column].ToString(), out var typeString))
                             {
+                                if ((typeString is string) == false 
+                                    && string.IsNullOrWhiteSpace(cell.ToString()))
+                                {
+                                    if (cell.ToString().Length > 0)
+                                        Debug.LogError($"{fieldName}'s {row + 1} line data is null or whitespace. You must be delete this column.");
+                                    
+                                    continue;
+                                }
+                                
                                 var converter = TypeDescriptor.GetConverter(typeString);
                                 var dataValue = converter.ConvertFrom(cell.ToString());
-
-#if UNITY_ANDROID
-                                Debug.Log($"{fieldName} : {dataValue}, {instance.GetType()}, {instance.GetType().GetProperty(fieldName)}");
-#endif
+//                                 Debug.Log($"{fieldName} : {dataValue}, {instance.GetType()}, {instance.GetType().GetProperty(fieldName)}");
                                 var property = instance.GetType().GetField(fieldName);
                                 property.SetValue(instance, dataValue);
                             }
