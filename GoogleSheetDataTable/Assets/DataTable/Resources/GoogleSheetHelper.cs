@@ -19,7 +19,16 @@ public class GoogleSheetHelper
     {
         UserCredential credential;
 
-        using (var stream = new FileStream($"{Path.Combine(Application.dataPath, credentialPath)}", FileMode.Open, FileAccess.Read))
+        var credentialFullPath = Path.Combine(Application.dataPath, credentialPath);
+
+        if (File.Exists(credentialFullPath) == false)
+        {
+            fileName = null;
+            Debug.LogError("You need OAuth client JSON file for Google API access. For more information, visit the link at <a href=\"https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable\">https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable</a>.");
+            return;
+        }
+
+        using (var stream = new FileStream(credentialFullPath, FileMode.Open, FileAccess.Read))
         {
             credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                 GoogleClientSecrets.FromStream(stream).Secrets,

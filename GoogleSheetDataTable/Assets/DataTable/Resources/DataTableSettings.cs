@@ -93,8 +93,10 @@ public class DataTableSettings : ScriptableObject
                 GoogleSheetHelper.DownloadToExcel(ToPlatformPath(CredentialJsonPath), ToPlatformPath(DownloadDirectory),
                     GoogleSheetURL, out var fileName);
 
-                SheetName = fileName;
+                if (string.IsNullOrEmpty(fileName))
+                    return;
                 
+                SheetName = fileName;
                 Step = TableProcessStep.DownloadSheet;
             }
 
