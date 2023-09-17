@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -89,9 +90,9 @@ public class ExcelSheetHelper : MonoBehaviour
                                 if (string.IsNullOrEmpty(fieldName) || fieldName.StartsWith("#"))
                                     continue;
 
-                                if (TryGetTypeFromString(fieldType, out var type))
+                                if (TryGetTypeFromString(fieldType, out var fieldTypeName, out var type))
                                 {
-                                    var fieldTypeLower = fieldType.ToString().ToLower();
+                                    var fieldTypeLower = fieldTypeName;
 
                                     fieldsBuilder.Append($"\t\t\tpublic {fieldTypeLower} {fieldName};\n");
                                     funcGetObjectDataBuilder.Append($"\t\t\t\tinfo.AddValue(\"{fieldName}\", {fieldName});\n");
@@ -207,7 +208,7 @@ public class ExcelSheetHelper : MonoBehaviour
                             if (string.IsNullOrEmpty(fieldName) || fieldName.StartsWith("#"))
                                 continue;
 
-                            if (rowType > RowTypeOfIndex.Type && TryGetTypeFromString(table.Rows[(int)RowTypeOfIndex.Type][column].ToString(), out var typeString))
+                            if (rowType > RowTypeOfIndex.Type && TryGetTypeFromString(table.Rows[(int)RowTypeOfIndex.Type][column].ToString(), out var fieldTypeName, out var typeString))
                             {
                                 if (string.IsNullOrWhiteSpace(cell.ToString()))
                                 {
@@ -219,7 +220,7 @@ public class ExcelSheetHelper : MonoBehaviour
                                 
                                 var converter = TypeDescriptor.GetConverter(typeString);
                                 var dataValue = converter.ConvertFrom(cell.ToString());
-//                                 Debug.Log($"{fieldName} : {dataValue}, {instance.GetType()}, {instance.GetType().GetProperty(fieldName)}");
+                                Debug.Log($"{fieldName} : {dataValue}, {instance.GetType()}, {instance.GetType().GetProperty(fieldName)}");
                                 var property = instance.GetType().GetField(fieldName);
                                 property.SetValue(instance, dataValue);
                             }
@@ -267,7 +268,7 @@ public class ExcelSheetHelper : MonoBehaviour
     {
         var binaryText = Resources.Load(filePath) as TextAsset;
 
-        var decrpyted = CryptoAES.Decrypt(binaryText.bytes, EncryptUtil.GetMD5Hash(Application.version));
+        var decrpyted = CryptoAES.Decrypt(binaryText.bytes, EncryptUtil.GetMD5Hash(BinaryExportEncryptPassword));
 
         using (var binaryStream = new MemoryStream(decrpyted))
         {
@@ -293,9 +294,11 @@ public class ExcelSheetHelper : MonoBehaviour
         return true;
     }
 
-    private static bool TryGetTypeFromString(string typeString, out Type type)
+    private static bool TryGetTypeFromString(string typeString, out string fieldName, out Type type)
     {
-        switch (typeString.ToLower())
+        fieldName = typeString.ToLower();
+        
+        switch (fieldName)
         {
             case "ushort":
                 type = typeof(ushort);
@@ -330,8 +333,19 @@ public class ExcelSheetHelper : MonoBehaviour
                 return true;
 
             default:
+            {
+                var enumType = Type.GetType(typeString);
+
+                if (enumType != null)
+                {   
+                    fieldName = typeString;
+                    type = enumType;
+                    return true;
+                }
+
                 type = null;
-                return false;
+                return false;   
+            }
         }
     }
 }
