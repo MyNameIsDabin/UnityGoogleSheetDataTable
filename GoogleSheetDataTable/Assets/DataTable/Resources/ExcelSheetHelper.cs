@@ -29,7 +29,8 @@ public class ExcelSheetHelper : MonoBehaviour
     {
         UniqueKey
     }
-    
+
+    private static readonly string BinaryExportEncryptPassword = "BinaryPassword";
     private static readonly string[] SupportedExtensions = new[] { ".XLS", ".XLSX" };
     private static readonly string[] IgnoreTables = new[] { "" };
 
@@ -52,6 +53,12 @@ public class ExcelSheetHelper : MonoBehaviour
 
                 if (IgnoreTables.Contains(table.TableName))
                     continue;
+
+                if (table.TableName.StartsWith("#"))
+                {
+                    Debug.Log($"[Excel: {table.TableName}] is Ignored (table name is started with '#')");
+                    continue;
+                }
 
                 var className = $"{table.TableName}Table";
                 var generateFilePath = Path.Combine(exportPath, $"{className}.cs");
@@ -79,7 +86,7 @@ public class ExcelSheetHelper : MonoBehaviour
                                 var fieldType = table.Rows[row + 1][column].ToString();
                                 var fieldOption = table.Rows[row + 2][column].ToString();
 
-                                if (string.IsNullOrEmpty(fieldName))
+                                if (string.IsNullOrEmpty(fieldName) || fieldName.StartsWith("#"))
                                     continue;
 
                                 if (TryGetTypeFromString(fieldType, out var type))
@@ -167,6 +174,12 @@ public class ExcelSheetHelper : MonoBehaviour
             {
                 if (IgnoreTables.Contains(table.TableName))
                     continue;
+                
+                if (table.TableName.StartsWith("#"))
+                {
+                    Debug.Log($"[Excel: {table.TableName}] is Ignored (table name is started with '#')");
+                    continue;
+                }
 
                 Debug.Log($"[Excel: {table.TableName}] (length : {table.Rows.Count})");
 
@@ -191,13 +204,12 @@ public class ExcelSheetHelper : MonoBehaviour
 
                             var fieldName = table.Rows[(int)RowTypeOfIndex.Name][column].ToString();
 
-                            if (string.IsNullOrEmpty(fieldName))
+                            if (string.IsNullOrEmpty(fieldName) || fieldName.StartsWith("#"))
                                 continue;
 
                             if (rowType > RowTypeOfIndex.Type && TryGetTypeFromString(table.Rows[(int)RowTypeOfIndex.Type][column].ToString(), out var typeString))
                             {
-                                if ((typeString is string) == false 
-                                    && string.IsNullOrWhiteSpace(cell.ToString()))
+                                if (string.IsNullOrWhiteSpace(cell.ToString()))
                                 {
                                     if (cell.ToString().Length > 0)
                                         Debug.LogError($"{fieldName}'s {row + 1} line data is null or whitespace. You must be delete this column.");
@@ -220,7 +232,7 @@ public class ExcelSheetHelper : MonoBehaviour
                 }
 
                 var bytes = File.ReadAllBytes(exportFilePath);
-                var encrpyted = CryptoAES.Encrypt(bytes, EncryptUtil.GetMD5Hash(Application.version));
+                var encrpyted = CryptoAES.Encrypt(bytes, EncryptUtil.GetMD5Hash(BinaryExportEncryptPassword));
                 File.WriteAllBytes(exportFilePath, encrpyted);
             }
         }
