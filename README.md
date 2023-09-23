@@ -72,7 +72,7 @@ var foods = FoodsTable.Instance.Where(food => food.Price >= 1000);
 
 첫번째 라인 : 헤더의 설명 (어떤 텍스트가 들어가도 상관 없습니다) <br></br>
 두번째 라인 : 데이터의 변수로 활용될 이름 <br></br>
-세번째 라인 : 자료형 **int, string, float, double, bool**을 지원합니다. <br></br>
+세번째 라인 : 자료형 **int, string, float, double, bool, 사용자 지정 Enum 타입입**을 지원합니다. <br></br>
 네번째 라인 : 옵션입니다. 현재는 UniqueKey만 사용 가능하며, 코드상에서 `GetDataBy[이름]` 으로 접근할 수 있게 됩니다. <br></br>
 다섯번째 라인 이후 부터는 실제 데이터가 정의되면 됩니다. <br></br>
 
