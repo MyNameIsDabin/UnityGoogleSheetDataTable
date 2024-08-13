@@ -13,20 +13,15 @@ public class DataTableSettings : ScriptableObject
     public string DownloadDirectory = @"Assets\DataTable\Plugins\ExcelSheets";
     public string ExportClassFileDirectory = @"Assets\DataTable\Tables";
     public string ExportBinaryDirectory = @"Assets\DataTable\Resources";
-    public string SheetName = string.Empty;
+    public bool IsDebugMode;
     
-    [HideInInspector] public bool UseOptions = true;
-    [HideInInspector] public TableProcessStep Step = TableProcessStep.Ready;
+    [HideInInspector]
+    public ExcelSheetHelper.ExcelMeta DownloadedSheet;
     
-    public static string ToPlatformPath(string path) => path.Replace(@"\", Path.DirectorySeparatorChar.ToString());
+    [HideInInspector] 
+    public bool UseOptions = true;
 
-    public enum TableProcessStep
-    {
-        Ready,
-        DownloadSheet,
-        CreateSingleton,
-        ExportBinaries
-    }
+    public static string ToPlatformPath(string path) => path.Replace(@"\", Path.DirectorySeparatorChar.ToString());
     
     public enum GUIAlign
     {
@@ -34,6 +29,8 @@ public class DataTableSettings : ScriptableObject
         Middle, 
         Right
     }
+
+    private Vector2 _scrollPosition;
     
     public void OnGUI()
     {
@@ -75,57 +72,102 @@ public class DataTableSettings : ScriptableObject
             
             EditorGUI.EndFoldoutHeaderGroup();
 
-            if (!string.IsNullOrEmpty(SheetName))
+            if (DownloadedSheet != null && !string.IsNullOrEmpty(DownloadedSheet.FilePath))
             {
                 var style = new GUIStyle(EditorStyles.helpBox)
                 {
-                    richText = true
+                    richText = true,
+                    fontSize = 12
                 };
-                style.fontSize = 12;
 
                 GUILayout.Space(3);
-                GUIAlignText(GUIAlign.Middle, $"<color=yellow>{SheetName}</color> is loaded.", style);
+                GUIAlignText(GUIAlign.Middle, $"<color=yellow>{Path.GetFileNameWithoutExtension(DownloadedSheet.FilePath)}</color> is loaded.", style);
                 GUILayout.Space(3);
+                
+                GUILayout.BeginVertical(GUI.skin.window, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+                {
+                    GUILayout.BeginHorizontal(GUILayout.Width(80));
+                    {
+                        if (GUILayout.Button("UnCheck All", GUILayout.Height(20), GUILayout.Width(100)))
+                        {
+                            foreach (var sheetInfo in DownloadedSheet.SheetInfos)
+                                sheetInfo.IsIgnore = true;
+                        }
+
+                        if (GUILayout.Button("Check All", GUILayout.Height(20), GUILayout.Width(100)))
+                        {
+                            foreach (var sheetInfo in DownloadedSheet.SheetInfos)
+                                sheetInfo.IsIgnore = false;
+                        }
+                        
+                        GUILayout.FlexibleSpace();
+                        
+                        var isToggle = GUILayout.Toggle(IsDebugMode, "Debug Mode", GUILayout.Width(15), GUILayout.Height(20));
+                        
+                        if (!IsDebugMode.Equals(isToggle))
+                            IsDebugMode = isToggle;
+                        
+                        GUILayout.Label("Debug Mode", GUILayout.Height(18));
+                    }
+                    GUILayout.EndHorizontal();
+                    
+                    _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, GUILayout.ExpandHeight(true));
+                    
+                    foreach (var sheetInfo in DownloadedSheet.SheetInfos)
+                    {
+                        if (sheetInfo.Name.StartsWith("#"))
+                            continue;
+                        
+                        GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
+                        {
+                            var isToggle = GUILayout.Toggle(!sheetInfo.IsIgnore, "", GUILayout.Width(15));
+
+                            if (!sheetInfo.IsIgnore.Equals(!isToggle))
+                                sheetInfo.IsIgnore = !isToggle;
+                            
+                            EditorGUI.BeginDisabledGroup(sheetInfo.IsIgnore);
+                            GUILayout.Label(sheetInfo.Name, GUILayout.ExpandWidth(true), GUILayout.Height(15));
+                            EditorGUI.EndDisabledGroup();
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    
+                    EditorGUILayout.EndScrollView();
+                }
+                GUILayout.EndVertical();
             }
 
             if (GUILayout.Button("Download Google Sheet", GUILayout.Height(30)))
             {
-                if (!GoogleSheetHelper.DownloadToExcel(ToPlatformPath(CredentialJsonPath),
-                        ToPlatformPath(DownloadDirectory),
-                        GoogleSheetURL, out var fileName))
+                if (!GoogleSheetHelper.DownloadToExcel(
+                        ToPlatformPath(CredentialJsonPath), 
+                        ToPlatformPath(DownloadDirectory), GoogleSheetURL, out var excelPath))
                     return;
 
-                if (string.IsNullOrEmpty(fileName))
+                if (string.IsNullOrEmpty(excelPath))
                     return;
                 
-                SheetName = fileName;
-                Step = TableProcessStep.DownloadSheet;
+                var sheetInfo = ExcelSheetHelper.LoadExcelMeta(excelPath);
+
+                if (sheetInfo != null)
+                {
+                    DownloadedSheet = sheetInfo;
+                    AssetDatabase.SaveAssets();
+                }
             }
 
-            if (!string.IsNullOrEmpty(SheetName))
+            if (DownloadedSheet != null)
             {
-                EditorGUI.BeginDisabledGroup(Step < TableProcessStep.DownloadSheet);
+                EditorGUI.BeginDisabledGroup(false);
                 
                 if (GUILayout.Button("Create Table Class", GUILayout.Height(30)))
                 {
-                    ExcelSheetHelper.ConvertExcelToClassFiles(
-                        Path.Combine(ToPlatformPath(DownloadDirectory), $"{SheetName}.xlsx"),
-                        ToPlatformPath(ExportClassFileDirectory));
-
-                    Step = TableProcessStep.CreateSingleton;
+                    ExcelSheetHelper.ConvertExcelToClassFiles(DownloadedSheet, ToPlatformPath(ExportClassFileDirectory));
                 }
-                
-                EditorGUI.EndDisabledGroup();
-                
-                EditorGUI.BeginDisabledGroup(Step < TableProcessStep.CreateSingleton);
                 
                 if (GUILayout.Button("Export Binary", GUILayout.Height(30)))
                 {
-                    ExcelSheetHelper.ExportBinaryFromExcel(
-                        Path.Combine(ToPlatformPath(DownloadDirectory), $"{SheetName}.xlsx"),
-                        Path.Combine(ToPlatformPath(ExportBinaryDirectory), RuntimeBinaryPath));
-                    
-                    Step = TableProcessStep.ExportBinaries;
+                    ExcelSheetHelper.ExportBinaryFromExcel(DownloadedSheet, Path.Combine(ToPlatformPath(ExportBinaryDirectory), RuntimeBinaryPath), IsDebugMode);
                 }
                 
                 EditorGUI.EndDisabledGroup();

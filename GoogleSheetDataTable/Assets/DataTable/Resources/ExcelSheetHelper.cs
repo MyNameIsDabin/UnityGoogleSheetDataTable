@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -17,6 +16,27 @@ using ExcelDataReader;
 
 public class ExcelSheetHelper : MonoBehaviour
 {
+    [Serializable]
+    public class ExcelMeta
+    {
+        [Serializable]
+        public class SheetInfo
+        {
+            public string Name;
+            public int Rows;
+            public bool IsIgnore;
+        }
+
+        public string FilePath;
+        public string Name => Path.GetFileNameWithoutExtension(FilePath);
+        public List<SheetInfo> SheetInfos = new List<ExcelMeta.SheetInfo>();
+
+        public SheetInfo GetSheetInfoOrNullByName(string sheetName)
+        {
+            return SheetInfos.FirstOrDefault(x => x.Name == sheetName);
+        }
+    }
+    
     private enum RowTypeOfIndex
     {
         Header,
@@ -33,15 +53,42 @@ public class ExcelSheetHelper : MonoBehaviour
 
     private static readonly string BinaryExportEncryptPassword = "BinaryPassword";
     private static readonly string[] SupportedExtensions = new[] { ".XLS", ".XLSX" };
-    private static readonly string[] IgnoreTables = new[] { "" };
 
 #if UNITY_EDITOR
-    public static void ConvertExcelToClassFiles(string excelPath, string exportPath)
+    public static ExcelMeta LoadExcelMeta(string excelPath)
     {
         if (!IsExcelFile(excelPath))
+            return null;
+
+        var sheetFileMeta = new ExcelMeta
+        {
+            FilePath = excelPath
+        };
+
+        using var stream = File.Open(excelPath, FileMode.Open, FileAccess.Read);
+        using var reader = ExcelReaderFactory.CreateReader(stream);
+        
+        var result = reader.AsDataSet(CreateExcelDataSetConfiguration());
+
+        foreach (DataTable table in result.Tables)
+        {
+            sheetFileMeta.SheetInfos.Add(new ExcelMeta.SheetInfo
+            {
+                Name = table.TableName,
+                Rows = table.Rows.Count,
+                IsIgnore = false
+            });
+        }
+
+        return sheetFileMeta;
+    }
+    
+    public static void ConvertExcelToClassFiles(ExcelMeta excelMeta, string exportPath)
+    {   
+        if (!IsExcelFile(excelMeta.FilePath))
             return;
 
-        using (var stream = File.Open(excelPath, FileMode.Open, FileAccess.Read))
+        using (var stream = File.Open(excelMeta.FilePath, FileMode.Open, FileAccess.Read))
         using (var reader = ExcelReaderFactory.CreateReader(stream))
         {
             Debug.Log("Convert excel to class files");
@@ -50,11 +97,16 @@ public class ExcelSheetHelper : MonoBehaviour
 
             foreach (DataTable table in result.Tables)
             {
-                Debug.Log($"[Excel: {table.TableName}] (length : {table.Rows.Count})");
+                var sheetInfo = excelMeta.GetSheetInfoOrNullByName(table.TableName);
 
-                if (IgnoreTables.Contains(table.TableName))
+                if (sheetInfo == null || sheetInfo.IsIgnore)
+                {
+                    Debug.Log($"[Excel: {table.TableName}] is Ignored");
                     continue;
-
+                }
+                
+                Debug.Log($"[Excel: {table.TableName}] (length : {table.Rows.Count})");
+                
                 if (table.TableName.StartsWith("#"))
                 {
                     Debug.Log($"[Excel: {table.TableName}] is Ignored (table name is started with '#')");
@@ -151,20 +203,21 @@ public class ExcelSheetHelper : MonoBehaviour
                 }
             }
         }
-
+        
+        AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
     }
 #endif
 
 #if UNITY_EDITOR
-    public static void ExportBinaryFromExcel(string filePath, string exportedPath)
+    public static void ExportBinaryFromExcel(ExcelMeta excelMeta, string exportedPath, bool isDebugMode)
     {
-        if (!IsExcelFile(filePath))
+        if (!IsExcelFile(excelMeta.FilePath))
             return;
 
         AssetDatabase.Refresh();
 
-        using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+        using (var stream = File.Open(excelMeta.FilePath, FileMode.Open, FileAccess.Read))
         using (var reader = ExcelReaderFactory.CreateReader(stream))
         {
             Debug.Log("Export Binary");
@@ -173,8 +226,15 @@ public class ExcelSheetHelper : MonoBehaviour
 
             foreach (DataTable table in result.Tables)
             {
-                if (IgnoreTables.Contains(table.TableName))
+                var sheetInfo = excelMeta.GetSheetInfoOrNullByName(table.TableName);
+
+                if (sheetInfo == null || sheetInfo.IsIgnore)
+                {
+                    Debug.Log($"[Excel: {table.TableName}] is Ignored");
                     continue;
+                }
+                
+                Debug.Log($"[Excel: {table.TableName}] (length : {table.Rows.Count})");
                 
                 if (table.TableName.StartsWith("#"))
                 {
@@ -220,7 +280,10 @@ public class ExcelSheetHelper : MonoBehaviour
                                 
                                 var converter = TypeDescriptor.GetConverter(typeString);
                                 var dataValue = converter.ConvertFrom(cell.ToString());
-                                Debug.Log($"{fieldName} : {dataValue}, {instance.GetType()}, {instance.GetType().GetProperty(fieldName)}");
+                                
+                                if (isDebugMode)
+                                    Debug.Log($"{fieldName} : {dataValue}, {instance.GetType()}, {instance.GetType().GetProperty(fieldName)}");
+                                
                                 var property = instance.GetType().GetProperty(fieldName);
                                 property.SetValue(instance, dataValue);
                             }
@@ -284,10 +347,9 @@ public class ExcelSheetHelper : MonoBehaviour
     {
         var fileExtension = Path.GetExtension(filePath).ToUpper();
 
-        if (!SupportedExtensions.Any(ext => ext == fileExtension))
+        if (SupportedExtensions.All(ext => ext != fileExtension))
         {
             Debug.LogWarning("Only Support to (.xls, .xlsx) file.");
-
             return false;
         }
 

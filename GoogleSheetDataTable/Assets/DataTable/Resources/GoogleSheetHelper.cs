@@ -16,17 +16,16 @@ public class GoogleSheetHelper
     private static readonly string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 #if UNITY_EDITOR
-    public static bool DownloadToExcel(string credentialPath, string downloadPath, string googleSheetUrl, out string fileName)
+    public static bool DownloadToExcel(string credentialPath, string downloadPath, string googleSheetUrl, out string filePath)
     {
         UserCredential credential = null;
-        fileName = null;
+        filePath = null;
         
         var credentialFullPath = Path.Combine(Application.dataPath, credentialPath);
 
         if (File.Exists(credentialFullPath) == false)
         {
             Debug.LogError("You need OAuth client JSON file for Google API access. For more information, visit the link at <a href=\"https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable\">https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable</a>.");
-            
             return false;
         }
 
@@ -35,7 +34,7 @@ public class GoogleSheetHelper
             Debug.Log("Requests Google OAuth access on the web.");
 
             var cancellationToken = new CancellationTokenSource();
-            cancellationToken.CancelAfter(TimeSpan.FromSeconds(10));
+            cancellationToken.CancelAfter(TimeSpan.FromSeconds(30));
             
             try
             {
@@ -54,7 +53,7 @@ public class GoogleSheetHelper
             catch (Exception e)
             {
                 Debug.Log($"The permission request has been canceled. {e.Message}");
-                fileName = null;
+                filePath = null;
                 return false;
             }
         }
@@ -78,12 +77,11 @@ public class GoogleSheetHelper
         using (var memoryStream = new MemoryStream())
         {
             request.Download(memoryStream);
-
-            fileName = driveService.Files.Get(spreadSheet.SpreadsheetId).Execute().Name;
-
-            var excelPath = Path.Combine(downloadPath, $"{fileName}.xlsx");
             
-            using (var file = new FileStream(excelPath, FileMode.Create, FileAccess.Write))
+            var fileName = driveService.Files.Get(spreadSheet.SpreadsheetId).Execute().Name;
+            filePath = Path.Combine(downloadPath, $"{fileName}.xlsx");
+            
+            using (var file = new FileStream(filePath, FileMode.Create, FileAccess.Write))
             {
                 memoryStream.WriteTo(file);
                 Debug.Log($"Download Success : {file.Name}");
