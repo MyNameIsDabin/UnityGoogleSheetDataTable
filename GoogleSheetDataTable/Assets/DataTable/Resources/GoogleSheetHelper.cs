@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 
 #if UNITY_EDITOR
+using System;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
@@ -15,28 +16,49 @@ public class GoogleSheetHelper
     private static readonly string ExcelMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 #if UNITY_EDITOR
-    public static void DownloadToExcel(string credentialPath, string downloadPath, string googleSheetUrl, out string fileName)
+    public static bool DownloadToExcel(string credentialPath, string downloadPath, string googleSheetUrl, out string fileName)
     {
-        UserCredential credential;
-
+        UserCredential credential = null;
+        fileName = null;
+        
         var credentialFullPath = Path.Combine(Application.dataPath, credentialPath);
 
         if (File.Exists(credentialFullPath) == false)
         {
-            fileName = null;
             Debug.LogError("You need OAuth client JSON file for Google API access. For more information, visit the link at <a href=\"https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable\">https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable</a>.");
-            return;
+            
+            return false;
         }
 
         using (var stream = new FileStream(credentialFullPath, FileMode.Open, FileAccess.Read))
         {
-            credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                GoogleClientSecrets.FromStream(stream).Secrets,
-                new [] { SheetsService.Scope.SpreadsheetsReadonly, DriveService.Scope.DriveReadonly },
-                Application.companyName,
-                CancellationToken.None).Result;
-        }
+            Debug.Log("Requests Google OAuth access on the web.");
 
+            var cancellationToken = new CancellationTokenSource();
+            cancellationToken.CancelAfter(TimeSpan.FromSeconds(10));
+            
+            try
+            {
+                var authorizeTask = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.FromStream(stream).Secrets,
+                    new[] { SheetsService.Scope.SpreadsheetsReadonly, DriveService.Scope.DriveReadonly },
+                    Application.companyName,
+                    cancellationToken.Token);
+                
+                authorizeTask.Wait(cancellationToken.Token);
+                credential = authorizeTask.Result;
+
+                if (cancellationToken.IsCancellationRequested)
+                    return false;
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"The permission request has been canceled. {e.Message}");
+                fileName = null;
+                return false;
+            }
+        }
+        
         var serviceInitializer = new BaseClientService.Initializer()
         {
             HttpClientInitializer = credential,
@@ -50,10 +72,10 @@ public class GoogleSheetHelper
         var spreadSheet = sheetService.Spreadsheets.Get(sheetId).Execute();
 
         var driveService = new DriveService(serviceInitializer);
+        
+        var request = driveService.Files.Export(spreadSheet.SpreadsheetId, ExcelMimeType);
 
-        FilesResource.ExportRequest request = driveService.Files.Export(spreadSheet.SpreadsheetId, ExcelMimeType);
-
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (var memoryStream = new MemoryStream())
         {
             request.Download(memoryStream);
 
@@ -61,13 +83,14 @@ public class GoogleSheetHelper
 
             var excelPath = Path.Combine(downloadPath, $"{fileName}.xlsx");
             
-            using (FileStream file = new FileStream(excelPath, FileMode.Create, FileAccess.Write))
+            using (var file = new FileStream(excelPath, FileMode.Create, FileAccess.Write))
             {
                 memoryStream.WriteTo(file);
-
                 Debug.Log($"Download Success : {file.Name}");
             }
         }
+
+        return true;
     }
 #endif
 }

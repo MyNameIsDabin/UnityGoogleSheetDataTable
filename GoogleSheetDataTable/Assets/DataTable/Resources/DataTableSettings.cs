@@ -90,8 +90,10 @@ public class DataTableSettings : ScriptableObject
 
             if (GUILayout.Button("Download Google Sheet", GUILayout.Height(30)))
             {
-                GoogleSheetHelper.DownloadToExcel(ToPlatformPath(CredentialJsonPath), ToPlatformPath(DownloadDirectory),
-                    GoogleSheetURL, out var fileName);
+                if (!GoogleSheetHelper.DownloadToExcel(ToPlatformPath(CredentialJsonPath),
+                        ToPlatformPath(DownloadDirectory),
+                        GoogleSheetURL, out var fileName))
+                    return;
 
                 if (string.IsNullOrEmpty(fileName))
                     return;
