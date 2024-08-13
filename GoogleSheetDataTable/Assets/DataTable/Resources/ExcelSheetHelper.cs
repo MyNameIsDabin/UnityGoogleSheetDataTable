@@ -94,7 +94,7 @@ public class ExcelSheetHelper : MonoBehaviour
                                 {
                                     var fieldTypeLower = fieldTypeName;
 
-                                    fieldsBuilder.Append($"\t\t\tpublic {fieldTypeLower} {fieldName};\n");
+                                    fieldsBuilder.Append($"\t\t\tpublic {fieldTypeLower} {fieldName} {{ get; set; }}\n");
                                     funcGetObjectDataBuilder.Append($"\t\t\t\tinfo.AddValue(\"{fieldName}\", {fieldName});\n");
                                     constructorBuilder.Append($"\t\t\t\t{fieldName} = ({fieldTypeLower})info.GetValue(\"{fieldName}\", typeof({fieldTypeLower}));\n");
 
@@ -221,7 +221,7 @@ public class ExcelSheetHelper : MonoBehaviour
                                 var converter = TypeDescriptor.GetConverter(typeString);
                                 var dataValue = converter.ConvertFrom(cell.ToString());
                                 Debug.Log($"{fieldName} : {dataValue}, {instance.GetType()}, {instance.GetType().GetProperty(fieldName)}");
-                                var property = instance.GetType().GetField(fieldName);
+                                var property = instance.GetType().GetProperty(fieldName);
                                 property.SetValue(instance, dataValue);
                             }
                         }
@@ -303,31 +303,27 @@ public class ExcelSheetHelper : MonoBehaviour
             case "ushort":
                 type = typeof(ushort);
                 return true;
-
             case "uint":
                 type = typeof(uint);
                 return true;
-
             case "bool":
                 type = typeof(bool);
                 return true;
-
             case "char":
                 type = typeof(char);
                 return true;
-
             case "int":
                 type = typeof(int);
                 return true;
-
             case "float":
                 type = typeof(float);
                 return true;
-
             case "double":
                 type = typeof(double);
                 return true;
-
+            case "long":
+                type = typeof(long);
+                return true;
             case "string":
                 type = typeof(string);
                 return true;
