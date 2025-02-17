@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{02D44404-9E86-4A33-B86F-04BC692AFED3}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>TabbySheet</RootNamespace>
+        <AssemblyName>TabbySheet</AssemblyName>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <LangVersion>9</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="ExcelDataReader">
+          <HintPath>Library\ExcelDataReader.dll</HintPath>
+        </Reference>
+        <Reference Include="ExcelDataReader.DataSet">
+          <HintPath>Library\ExcelDataReader.DataSet.dll</HintPath>
+        </Reference>
+        <Reference Include="Google.Apis">
+          <HintPath>Library\Google.Apis.dll</HintPath>
+        </Reference>
+        <Reference Include="Google.Apis.Auth">
+          <HintPath>Library\Google.Apis.Auth.dll</HintPath>
+        </Reference>
+        <Reference Include="Google.Apis.Auth.PlatformServices">
+          <HintPath>Library\Google.Apis.Auth.PlatformServices.dll</HintPath>
+        </Reference>
+        <Reference Include="Google.Apis.Core">
+          <HintPath>Library\Google.Apis.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="Google.Apis.Drive.v3">
+          <HintPath>Library\Google.Apis.Drive.v3.dll</HintPath>
+        </Reference>
+        <Reference Include="Google.Apis.Sheets.v4">
+          <HintPath>Library\Google.Apis.Sheets.v4.dll</HintPath>
+        </Reference>
+        <Reference Include="System"/>
+        <Reference Include="System.Core"/>
+        <Reference Include="System.Data"/>
+        <Reference Include="System.Xml"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Core\DataSheet.cs" />
+        <Compile Include="Core\Interfaces\IDataTable.cs" />
+        <Compile Include="Core\Interfaces\ISheetCustomProperty.cs" />
+        <Compile Include="Core\Interfaces\ISheetFileInfo.cs" />
+        <Compile Include="Core\Interfaces\ISheetInfo.cs" />
+        <Compile Include="Core\Logger.cs" />
+        <Compile Include="Core\Utils.cs" />
+        <Compile Include="ExcelSheet\DataTableAssetGenerator.cs" />
+        <Compile Include="ExcelSheet\DataTableBase.cs" />
+        <Compile Include="ExcelSheet\ExcelSheetFileMeta.cs" />
+        <Compile Include="ExcelSheet\IExcelMetaAssigner.cs" />
+        <Compile Include="GoogleSheet\GoogleSheet.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs"/>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="ExcelSheet\DataTableClassTemplate.txt" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+
+</Project>

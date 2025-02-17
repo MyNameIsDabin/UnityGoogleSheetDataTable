@@ -1,20 +1,51 @@
+using TabbySheet;
 using UnityEditor;
 using UnityEngine;
 
+[InitializeOnLoad]
 public class DataTableWindow : EditorWindow
 {
     private static readonly string EditorSettingFilePath = "Assets/DataTable/Resources/DataTableSettings.asset";
     
     private static DataTableSettings _dataTableSettings;
 
+    static DataTableWindow()
+    {
+        EditorApplication.update -= OnEditorUpdate;
+        EditorApplication.update += OnEditorUpdate;
+    }
+    
+    private static void OnEditorUpdate()
+    {
+        if (Application.isPlaying)
+            return;
+        
+        DataSheet.SetDataTableAssetLoadHandler(OnDataTableLoadHandlerEditor);
+    }
+    
+    private static byte[] OnDataTableLoadHandlerEditor(string sheetName)
+    {
+        var asset = Resources.Load($"DataTableBinary/{sheetName}", typeof(TextAsset)) as TextAsset;
+        return asset!.bytes;
+    }
+    
     [MenuItem("Tools/DataTable #t")]
     static void ShowWindow() 
     {
         LoadSettings();
 
         var window = GetWindow(typeof(DataTableWindow));
-        window.titleContent = new GUIContent("GoogleDataTable ");
+        window.titleContent = new GUIContent("GoogleDataTable");
         window.Show();
+    }
+
+    [MenuItem("Tools/Test")]
+    static void Test()
+    {
+        foreach (var data in DataSheet.Load<FoodsTable>())
+        {
+            Debug.Log(data.Name);
+        }
     }
 
     [UnityEditor.Callbacks.DidReloadScripts]
@@ -68,5 +99,7 @@ public class DataTableWindow : EditorWindow
     private static void LoadSettings()
     {
         _dataTableSettings = DataTableSettings;
+        
+        TabbySheet.Logger.SetLogAction(Debug.Log);
     }
 }
