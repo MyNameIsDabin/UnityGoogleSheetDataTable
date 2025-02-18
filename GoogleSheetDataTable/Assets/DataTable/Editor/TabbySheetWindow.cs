@@ -40,15 +40,6 @@ public class TabbySheetWindow : EditorWindow
         window.Show();
     }
 
-    [MenuItem("Tools/Test")]
-    static void Test()
-    {
-        foreach (var data in DataSheet.Load<FoodsTable>())
-        {
-            Debug.Log(data.Name);
-        }
-    }
-
     [UnityEditor.Callbacks.DidReloadScripts]
     static void OnScriptsReloaded()
     {
