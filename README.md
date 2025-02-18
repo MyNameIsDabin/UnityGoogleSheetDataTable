@@ -6,25 +6,24 @@
 
 적은 양의 스크립트와 dll만 임포트되기 때문에 가볍게 사용할 수 있습니다.
 
-
-아래와 같이 싱글톤으로 간단하게 데이터에 접근할 수 있습니다.
+아래와 같이 쉽게 데이터에 접근할 수 있습니다.
 
 ```cs
+using TabbySheet;
+using UnityEngine;
 
-// 1. 모든 데이터 접근
-foreach(var food in FoodsTable.Instance)
+public class DemoScript : MonoBehaviour
 {
-   Debug.Log(firstFood.Name);
+    void Start()
+    {
+        TabbyDataSheet.Init();
+        
+        var foodsTable = DataSheet.Load<FoodsTable>();
+        
+        foreach (var data in foodsTable)
+            Debug.Log(data.Name);
+    }
 }
-
-// 2. 특정 Unique Key를 사용해서 접근
-var firstFood = FoodsTable.Instance.GetDataById(0); 
-
-Debug.Log(firstFood.Name);
-Debug.Log(firstFood.CanBuy);
-
-// 3. Linq로 특정 데이터 찾기
-var foods = FoodsTable.Instance.Where(food => food.Price >= 1000);
 ```
 
 ## 준비
@@ -45,18 +44,15 @@ var foods = FoodsTable.Instance.Where(food => food.Price >= 1000);
 
 <img src="https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable/blob/main/Guide/04.png" width="450px"></img><br/>
 
-거의 끝났습니다. 이제 서비스 계정만 추가하면 됩니다. 서비스 계정 관리에서 API를 요청할 이메일 계정 정보를 추가합니다.
 
-<img src="https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable/blob/main/Guide/05.png" width="650px"></img><br/>
-
-마지막으로 다음 Google Sheets API, Google Drive API 를 사용 설정됨 상태로 전환하면 준비가 끝납니다.
+Google Sheets API, Google Drive API 를 사용 설정됨 상태로 전환하면 준비가 끝납니다.
 
 <img src="https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable/blob/main/Guide/06.png" width="650px"></img><br/>
 
 ## 사용 방법
 
 1. package 파일을 임포트 합니다.
-2. 유니티 상단의 [Tools - DataTable] 혹은 Shift+T 를 눌러서 시트 툴을 에디터를 열어줍니다.
+2. 유니티 상단의 [Tools - TabbySheet] 혹은 Shift+T 를 눌러서 시트 툴을 에디터를 열어줍니다.
 3. 좌측상단의 Edit 버튼을 눌러서 Google Sheet URL, credential.json 경로를 기입해줍니다.
 4. `[Download Google Sheet]`를 눌러서 해당 URL 로 부터 시트 파일을 다운로드 받습니다.
 5. `[Create Table Class]`를 눌러서 코드에서 테이블 데이터에 쉽게 접근 가능하게 해주는 싱글톤 클래스 파일을 생성합니다.
@@ -72,7 +68,7 @@ var foods = FoodsTable.Instance.Where(food => food.Price >= 1000);
 
 첫번째 라인 : 헤더의 설명 (어떤 텍스트가 들어가도 상관 없습니다) <br></br>
 두번째 라인 : 데이터의 변수로 활용될 이름 <br></br>
-세번째 라인 : 자료형 **int, string, float, double, bool, 사용자 지정 Enum 타입입**을 지원합니다. <br></br>
+세번째 라인 : 자료형 **int, string, float, double, bool, 사용자 지정 Enum 타입**을 지원합니다. <br></br>
 네번째 라인 : 옵션입니다. 현재는 UniqueKey만 사용 가능하며, 코드상에서 `GetDataBy[이름]` 으로 접근할 수 있게 됩니다. <br></br>
 다섯번째 라인 이후 부터는 실제 데이터가 정의되면 됩니다. <br></br>
 
