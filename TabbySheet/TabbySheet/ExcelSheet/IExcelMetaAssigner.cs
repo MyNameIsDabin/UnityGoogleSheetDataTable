@@ -1,7 +1,7 @@
 ﻿namespace TabbySheet
 {
-    public interface IExcelMetaAssigner
+    public interface IExcelMetaAssigner<T>
     {
-        public ISheetCustomProperty Assign(System.Data.DataTable dataTable);
+        public T Assign(System.Data.DataTable dataTable);
     }
 }

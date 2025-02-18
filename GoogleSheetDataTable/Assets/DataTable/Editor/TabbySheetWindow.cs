@@ -1,15 +1,16 @@
 using TabbySheet;
 using UnityEditor;
 using UnityEngine;
+using Logger = TabbySheet.Logger;
 
 [InitializeOnLoad]
-public class DataTableWindow : EditorWindow
+public class TabbySheetWindow : EditorWindow
 {
-    private static readonly string EditorSettingFilePath = "Assets/DataTable/Resources/DataTableSettings.asset";
+    private static readonly string EditorSettingFilePath = "Assets/DataTable/Resources/TabbySheetSettings.asset";
     
-    private static DataTableSettings _dataTableSettings;
+    private static TabbySheetSettings _dataTableSettings;
 
-    static DataTableWindow()
+    static TabbySheetWindow()
     {
         EditorApplication.update -= OnEditorUpdate;
         EditorApplication.update += OnEditorUpdate;
@@ -29,13 +30,13 @@ public class DataTableWindow : EditorWindow
         return asset!.bytes;
     }
     
-    [MenuItem("Tools/DataTable #t")]
+    [MenuItem("Tools/TabbySheet #t")]
     static void ShowWindow() 
     {
         LoadSettings();
 
-        var window = GetWindow(typeof(DataTableWindow));
-        window.titleContent = new GUIContent("GoogleDataTable");
+        var window = GetWindow(typeof(TabbySheetWindow));
+        window.titleContent = new GUIContent("TabbySheet");
         window.Show();
     }
 
@@ -73,16 +74,16 @@ public class DataTableWindow : EditorWindow
         SaveSettings();
     }
 
-    private static DataTableSettings DataTableSettings
+    private static TabbySheetSettings DataTableSettings
     {
         get
         {
-            var settings = AssetDatabase.LoadAssetAtPath(EditorSettingFilePath, typeof(DataTableSettings)) as DataTableSettings;
+            var settings = AssetDatabase.LoadAssetAtPath(EditorSettingFilePath, typeof(TabbySheetSettings)) as TabbySheetSettings;
 
             if (settings != null) 
                 return settings;
             
-            var asset = CreateInstance<DataTableSettings>();
+            var asset = CreateInstance<TabbySheetSettings>();
             AssetDatabase.CreateAsset(asset, EditorSettingFilePath);
             
             return asset;
@@ -100,6 +101,10 @@ public class DataTableWindow : EditorWindow
     {
         _dataTableSettings = DataTableSettings;
         
-        TabbySheet.Logger.SetLogAction(Debug.Log);
+        Logger.SetLogAction((logType, message) =>
+        {
+            if (_dataTableSettings.IsDebugMode && logType == Logger.LogType.Debug)
+                Debug.Log(message);
+        });
     }
 }

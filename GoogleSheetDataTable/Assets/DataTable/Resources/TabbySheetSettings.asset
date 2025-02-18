@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c8ab393abe46fc4c9aa7ac7f692e10c, type: 3}
-  m_Name: DataTableSettings
+  m_Name: TabbySheetSettings
   m_EditorClassIdentifier: 
-  GoogleSheetURL: https://docs.google.com/spreadsheets/d/1OEOGA9jDBZMqIzdfEAqatppSFXMMLX90bRxWUmcn440/edit?gid=0#gid=0
+  GoogleSheetURL: https://docs.google.com/spreadsheets/d/000000~~/edit#gid=000000000
   CredentialJsonPath: Assets/DataTable/Editor/credentials.json
   DownloadDirectory: Assets/DataTable/Editor/ExcelSheets
   ExportClassFileDirectory: Assets/DataTable/Tables
   ExportBinaryDirectory: Assets/DataTable/Resources/DataTableBinary
   IsDebugMode: 0
+  DownloadedSheet:
+    ExcelSheetInfos: []
   UseOptions: 1

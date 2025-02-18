@@ -58,7 +58,7 @@ namespace TabbySheet
             using var stream = File.Open(excelMeta.FilePath, FileMode.Open, FileAccess.Read);
             using var reader = ExcelReaderFactory.CreateReader(stream);
             
-            Logger.Log("Export Binary");
+            Logger.Log("Export Binary", Logger.LogType.Debug);
 
             var result = reader.AsDataSet(excelMeta.ExcelDataSetConfiguration);
 
@@ -68,21 +68,21 @@ namespace TabbySheet
 
                 if (sheetInfo == null)
                 {
-                    Logger.Log($"{table.TableName} not found.");
+                    Logger.Log($"{table.TableName} not found.", Logger.LogType.Debug);
                     continue;
                 }
 
                 if (generateHandler?.Predicate != null && !generateHandler.Predicate(sheetInfo))
                 {
-                    Logger.Log($"{table.TableName} is Ignored");
+                    Logger.Log($"{table.TableName} is Ignored", Logger.LogType.Debug);
                     continue;
                 }
 
-                Logger.Log($"{table.TableName} (length : {table.Rows.Count})");
+                Logger.Log($"{table.TableName} (length : {table.Rows.Count})", Logger.LogType.Debug);
 
                 if (sheetInfo.Name.StartsWith("#"))
                 {
-                    Logger.Log($"{table.TableName} is Ignored. (table name is started with '#')");
+                    Logger.Log($"{table.TableName} is Ignored. (table name is started with '#')", Logger.LogType.Debug);
                     continue;
                 }
                 
@@ -240,7 +240,7 @@ namespace TabbySheet
                             if (string.IsNullOrWhiteSpace(cell.ToString()))
                             {
                                 if (cell.ToString().Length > 0)
-                                    Logger.Log($"{fieldName}'s {row + 1} line data is null or whitespace. You must be delete this column.");
+                                    Logger.Log($"{fieldName}'s {row + 1} line data is null or whitespace. You must be delete this column.", Logger.LogType.Debug);
                                             
                                 continue;
                             }
@@ -248,7 +248,7 @@ namespace TabbySheet
                             var converter = TypeDescriptor.GetConverter(typeString);
                             var dataValue = converter.ConvertFrom(cell.ToString());
                                         
-                            Logger.Log($"{fieldName} : {dataValue}, {instance.GetType()}, {instance.GetType().GetProperty(fieldName)}");
+                            Logger.Log($"{fieldName} : {dataValue}, {instance.GetType()}, {instance.GetType().GetProperty(fieldName)}", Logger.LogType.Debug);
                                         
                             var property = instance.GetType().GetProperty(fieldName);
                             property?.SetValue(instance, dataValue);
@@ -271,7 +271,7 @@ namespace TabbySheet
             if (SupportedExtensions.Any(ext => ext == fileExtension)) 
                 return true;
             
-            Logger.Log($"Only Support to ({string.Join(", ", SupportedExtensions)}) file.");
+            Logger.Log($"Only Support to ({string.Join(", ", SupportedExtensions)}) file.", Logger.LogType.Debug);
             return false;
         }
     }

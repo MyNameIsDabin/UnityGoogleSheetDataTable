@@ -39,7 +39,7 @@ namespace TabbySheet
 
             using (var stream = new FileStream(credentialPath, FileMode.Open, FileAccess.Read))
             {
-                Logger.Log("Requests Google OAuth access on the web.");
+                Logger.Log("Google sign-in attempt.");
 
                 var cancellationToken = new CancellationTokenSource();
                 cancellationToken.CancelAfter(TimeSpan.FromSeconds(30));
@@ -63,6 +63,8 @@ namespace TabbySheet
                     Logger.Log($"The permission request has been canceled. {e.Message}");
                     return DownloadResult.Cancelled;
                 }
+                
+                Logger.Log("Google login successful.");
             }
             
             try

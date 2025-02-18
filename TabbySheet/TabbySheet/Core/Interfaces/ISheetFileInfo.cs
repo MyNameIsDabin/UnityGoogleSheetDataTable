@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 
 namespace TabbySheet
 {
     public interface ISheetFileMeta
     {
         public string FilePath { get; }
-        public List<ISheetInfo> SheetInfos { get; }
+        public ObservableCollection<ISheetInfo> SheetInfos { get; }
         public ISheetInfo GetSheetInfoOrNullByName(string sheetName);
     }
 }
