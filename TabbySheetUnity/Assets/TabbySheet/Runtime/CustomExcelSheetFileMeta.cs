@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using TabbySheet;
 using UnityEngine;
 
@@ -12,11 +13,13 @@ public class CustomExcelSheetFileMeta : ExcelSheetFileMeta
     
     [SerializeField]
     public List<ExcelSheetInfo> ExcelSheetInfos = new List<ExcelSheetInfo>();
-        
+    
+    public override List<ISheetInfo> SheetInfos => ExcelSheetInfos.OfType<ISheetInfo>().ToList();
+
     public CustomExcelSheetFileMeta()
     {
         DownloadTime = DateTime.Now;
-        SheetInfos.CollectionChanged += CollectionChanged;
+        ObservableSheetInfos.CollectionChanged += CollectionChanged;
     }
 
     private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

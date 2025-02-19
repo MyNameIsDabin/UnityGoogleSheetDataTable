@@ -14,8 +14,6 @@ public class TabbySheetSettings : ScriptableObject
     public string ExportClassFileDirectory = "Assets/TabbySheet/Tables";
     public string ExportBinaryDirectory = "Assets/TabbySheet/Resources/DataTableBinary";
     public bool IsDebugMode;
-
-    [HideInInspector] 
     public CustomExcelSheetFileMeta DownloadedSheet;
     
     [HideInInspector]
@@ -199,7 +197,7 @@ public class TabbySheetSettings : ScriptableObject
 
                 var generateHandler = new DataTableAssetGenerator.GenerateHandler
                 {
-                    Predicate = sheetInfo => ((ExcelSheetInfo)sheetInfo).CustomProperties.IsIgnore,
+                    Predicate = sheetInfo => !((ExcelSheetInfo)sheetInfo).CustomProperties.IsIgnore,
                 };
                 
                 if (GUILayout.Button("Generate Class Files", GUILayout.Height(30)))
@@ -209,7 +207,7 @@ public class TabbySheetSettings : ScriptableObject
                         CreateDirectoryIfNotExists(ExportClassFileDirectory);
                         DataTableAssetGenerator.GenerateClassesFromExcel(DownloadedSheet, ExportClassFileDirectory, generateHandler);
                         
-                        Debug.Log("Class Generation Success!");
+                        Debug.Log("Class Generation Finish!");
                     }
                     catch (Exception e)
                     {
@@ -224,7 +222,7 @@ public class TabbySheetSettings : ScriptableObject
                         CreateDirectoryIfNotExists(ExportBinaryDirectory);
                         DataTableAssetGenerator.GenerateBinaryFromExcel(DownloadedSheet, ExportBinaryDirectory, generateHandler);
                         
-                        Debug.Log("Binary Export Success!");
+                        Debug.Log("Binary Export Finish!");
                     }
                     catch (Exception e)
                     {

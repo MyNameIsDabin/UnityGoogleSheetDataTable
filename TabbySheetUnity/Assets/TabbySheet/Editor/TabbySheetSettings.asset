@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: TabbySheetSettings
   m_EditorClassIdentifier: 
   GoogleSheetURL: https://docs.google.com/spreadsheets/d/000000~~/edit#gid=000000000
-  CredentialJsonPath: Assets/DataTable/Editor/credentials.json
-  DownloadDirectory: Assets/DataTable/Editor/ExcelSheets
-  ExportClassFileDirectory: Assets/DataTable/Tables
-  ExportBinaryDirectory: Assets/DataTable/Resources/DataTableBinary
+  CredentialJsonPath: Assets/TabbySheet/Editor/credentials.json
+  DownloadDirectory: Assets/TabbySheet/Editor/ExcelSheets
+  ExportClassFileDirectory: Assets/TabbySheet/Tables
+  ExportBinaryDirectory: Assets/TabbySheet/Resources/DataTableBinary
   IsDebugMode: 0
   DownloadedSheet:
     ExcelSheetInfos: []
