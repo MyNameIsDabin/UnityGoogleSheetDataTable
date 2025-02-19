@@ -72,8 +72,6 @@ Google Sheets API, Google Drive API 를 사용 설정됨 상태로 전환하면 
 네번째 라인 : 옵션입니다. 현재는 UniqueKey만 사용 가능하며, 코드상에서 `GetDataBy[이름]` 으로 접근할 수 있게 됩니다. <br></br>
 다섯번째 라인 이후 부터는 실제 데이터가 정의되면 됩니다. <br></br>
 
-### Apache License 2.0
-
 ----------------------------------------
 Project Copyright and License
 ----------------------------------------
