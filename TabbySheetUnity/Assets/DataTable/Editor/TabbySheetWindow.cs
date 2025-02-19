@@ -6,7 +6,7 @@ using Logger = TabbySheet.Logger;
 [InitializeOnLoad]
 public class TabbySheetWindow : EditorWindow
 {
-    private static readonly string EditorSettingFilePath = "Assets/DataTable/Resources/TabbySheetSettings.asset";
+    private static readonly string EditorSettingFilePath = "Assets/DataTable/Editor/TabbySheetSettings.asset";
     
     private static TabbySheetSettings _dataTableSettings;
 

@@ -204,6 +204,7 @@ public class TabbySheetSettings : ScriptableObject
                 {
                     try
                     {
+                        CreateDirectoryIfNotExists(ExportClassFileDirectory);
                         DataTableAssetGenerator.GenerateClassesFromExcel(DownloadedSheet, ExportClassFileDirectory, generateHandler);
                         
                         Debug.Log("Class Generation Success!");
@@ -218,6 +219,7 @@ public class TabbySheetSettings : ScriptableObject
                 {
                     try
                     {
+                        CreateDirectoryIfNotExists(ExportBinaryDirectory);
                         DataTableAssetGenerator.GenerateBinaryFromExcel(DownloadedSheet, ExportBinaryDirectory, generateHandler);
                         
                         Debug.Log("Binary Export Success!");
@@ -244,5 +246,11 @@ public class TabbySheetSettings : ScriptableObject
             GUILayout.EndHorizontal();
         }
 #endif
+    }
+    
+    private static void CreateDirectoryIfNotExists(string path)
+    {
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
     }
 }
