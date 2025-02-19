@@ -6,7 +6,7 @@
 
 적은 양의 스크립트와 dll만 임포트되기 때문에 가볍게 사용할 수 있습니다.
 
-## Demo Script
+## Unity Demo
 
 ```cs
 using TabbySheet;
@@ -26,7 +26,7 @@ public class DemoScript : MonoBehaviour
 }
 ```
 
-## 준비
+## Ready
 
 구글 API 접근을 위한 OAuth 클라이언트 JSON 파일과 몇가지 설정이 필요합니다. 
 
