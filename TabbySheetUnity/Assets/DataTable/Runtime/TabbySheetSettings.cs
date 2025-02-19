@@ -9,10 +9,10 @@ using UnityEditor;
 public class TabbySheetSettings : ScriptableObject
 {
     public string GoogleSheetURL = "https://docs.google.com/spreadsheets/d/000000~~/edit#gid=000000000";
-    public string CredentialJsonPath = "Assets/DataTable/Editor/credentials.json";
-    public string DownloadDirectory = "Assets/DataTable/Editor/ExcelSheets";
-    public string ExportClassFileDirectory = "Assets/DataTable/Tables";
-    public string ExportBinaryDirectory = "Assets/DataTable/Resources/DataTableBinary";
+    public string CredentialJsonPath = $"Assets/TabbySheet/Editor/credentials.json";
+    public string DownloadDirectory = "Assets/TabbySheet/Editor/ExcelSheets";
+    public string ExportClassFileDirectory = "Assets/TabbySheet/Tables";
+    public string ExportBinaryDirectory = "Assets/TabbySheet/Resources/DataTableBinary";
     public bool IsDebugMode;
 
     [HideInInspector] 
