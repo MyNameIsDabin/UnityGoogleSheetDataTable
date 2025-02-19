@@ -72,3 +72,22 @@ Google Sheets API, Google Drive API 를 사용 설정됨 상태로 전환하면 
 네번째 라인 : 옵션입니다. 현재는 UniqueKey만 사용 가능하며, 코드상에서 `GetDataBy[이름]` 으로 접근할 수 있게 됩니다. <br></br>
 다섯번째 라인 이후 부터는 실제 데이터가 정의되면 됩니다. <br></br>
 
+### License
+```
+----------------------------------------
+Project Copyright and License
+----------------------------------------
+© 2025 Davin
+
+This software is licensed under the Apache License 2.0.
+For more information, please refer to the LICENSE file.
+
+----------------------------------------
+Third-Party Dependencies
+----------------------------------------
+
+[Apache-2.0 license](https://github.com/googleapis/google-api-nodejs-client/blob/main/LICENSE)
+- Google API Client Libraries (Auth, Drive.v3, Sheets.v4)
+
+[MIT license](https://licenses.nuget.org/MIT)
+- [ExcelDataReader](https://www.nuget.org/packages/exceldatareader/)
