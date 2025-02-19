@@ -1,12 +1,12 @@
-# GoogleSheet DataTable for Unity
+# Tabby Sheet
+
+A C# and Unity-compatible library that downloads Google Sheets and exports/imports them as binary assets.
+
+## Tabby Sheet for Unity
 
 ![](https://github.com/MyNameIsDabin/UnityGoogleSheetDataTable/blob/main/Guide/02.png)
 
-구글 스프레드시트를 불러와서 사용 가능한 초간단 데이터 테이블 에디터 툴 입니다.
-
-적은 양의 스크립트와 dll만 임포트되기 때문에 가볍게 사용할 수 있습니다.
-
-## Unity Demo
+### Unity Demo
 
 ```cs
 using TabbySheet;
@@ -25,6 +25,13 @@ public class DemoScript : MonoBehaviour
     }
 }
 ```
+
+### How to Import 
+![](https://github.com/MyNameIsDabin/TabbySheet/blob/main/Guide/07.png)
+
+URL : `https://github.com/MyNameIsDabin/TabbySheet.git?path=/TabbySheetUnity/Assets/TabbySheet`
+
+Click the plus (+) button in the Unity Package Manager, select 'Add package from git URL...', enter the following URL, and then click the Add button to install the package.
 
 ## Ready
 
