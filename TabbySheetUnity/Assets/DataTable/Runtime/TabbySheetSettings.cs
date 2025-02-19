@@ -164,6 +164,8 @@ public class TabbySheetSettings : ScriptableObject
 
             if (GUILayout.Button("Download Google Sheet", GUILayout.Height(30)))
             {
+                CreateDirectoryIfNotExists(DownloadDirectory);
+                
                 var downloadResult = GoogleSheet.DownloadExcelFile(
                     Application.companyName, 
                     CredentialJsonPath, 
@@ -200,7 +202,7 @@ public class TabbySheetSettings : ScriptableObject
                     Predicate = sheetInfo => ((ExcelSheetInfo)sheetInfo).CustomProperties.IsIgnore,
                 };
                 
-                if (GUILayout.Button("Create Class Files", GUILayout.Height(30)))
+                if (GUILayout.Button("Generate Class Files", GUILayout.Height(30)))
                 {
                     try
                     {

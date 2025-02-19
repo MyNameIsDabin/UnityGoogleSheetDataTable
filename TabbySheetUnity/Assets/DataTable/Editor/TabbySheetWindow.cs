@@ -1,3 +1,4 @@
+using System.IO;
 using TabbySheet;
 using UnityEditor;
 using UnityEngine;
@@ -6,7 +7,8 @@ using Logger = TabbySheet.Logger;
 [InitializeOnLoad]
 public class TabbySheetWindow : EditorWindow
 {
-    private static readonly string EditorSettingFilePath = "Assets/DataTable/Editor/TabbySheetSettings.asset";
+    private const string EditorSettingDirectory = "Assets/TabbySheet/Editor";
+    private static readonly string EditorSettingFilePath = $"{EditorSettingDirectory}/TabbySheetSettings.asset";
     
     private static TabbySheetSettings _dataTableSettings;
 
@@ -71,8 +73,11 @@ public class TabbySheetWindow : EditorWindow
         {
             var settings = AssetDatabase.LoadAssetAtPath(EditorSettingFilePath, typeof(TabbySheetSettings)) as TabbySheetSettings;
 
-            if (settings != null) 
+            if (settings != null)
                 return settings;
+            
+            if (!Directory.Exists(EditorSettingDirectory))
+                Directory.CreateDirectory(EditorSettingDirectory);
             
             var asset = CreateInstance<TabbySheetSettings>();
             AssetDatabase.CreateAsset(asset, EditorSettingFilePath);
