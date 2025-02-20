@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TabbySheetSettings" load_steps=2 format=3 uid="uid://30qvg3ywhrbj"]
+
+[ext_resource type="Script" path="res://addons/TabbySheet/TabbySheetSettings.cs" id="1_vm7dd"]
+
+[resource]
+script = ExtResource("1_vm7dd")
+GoogleSheetURL = "https://docs.google.com/spreadsheets/d/000000~~/edit#gid=000000000"
+CredentialJsonPath = "res://addons/TabbySheet/credentials.json"
+ExcelDownloadPath = "res://addons/TabbySheet/ExcelSheets"
+ClassDirectoryPath = "res://addons/TabbySheet/DataTableBinary"

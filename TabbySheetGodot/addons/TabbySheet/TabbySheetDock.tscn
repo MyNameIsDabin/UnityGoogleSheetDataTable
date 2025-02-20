@@ -1,0 +1,96 @@
+[gd_scene load_steps=2 format=3 uid="uid://dffoq7ajt38rb"]
+
+[ext_resource type="Script" path="res://addons/TabbySheet/TabbySheetDock.cs" id="1_dmx2w"]
+
+[node name="TabbySheetDock" type="Control" node_paths=PackedStringArray("lineEditGoogleSheetUrl", "lineEditCredentialJsonPath", "lineEditExcelDownloadPath", "lineEditGenerateClassPath", "downloadButton", "generateClassesButton", "exportBinaryButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dmx2w")
+lineEditGoogleSheetUrl = NodePath("VBoxContainer/GoogleSheetUrlForm/LineEdit_GoogleSheetUrl")
+lineEditCredentialJsonPath = NodePath("VBoxContainer/CredentialJsonForm/LineEdit_CredentialJsonPath")
+lineEditExcelDownloadPath = NodePath("VBoxContainer/ExcelDownloadDirectoryForm/LineEdit_ExcelDownloadDirectory")
+lineEditGenerateClassPath = NodePath("VBoxContainer/CreatedClassDirectoryForm/LineEdit_CreatedClassDirectory")
+downloadButton = NodePath("VBoxContainer/ButtonDownloadGoogleSheet")
+generateClassesButton = NodePath("VBoxContainer/ButtonGenerateClasses")
+exportBinaryButton = NodePath("VBoxContainer/ButtonExportBinary")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GoogleSheetUrlForm" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label_GoogleSheetUrl" type="Label" parent="VBoxContainer/GoogleSheetUrlForm"]
+clip_contents = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Google Sheet URL"
+
+[node name="LineEdit_GoogleSheetUrl" type="LineEdit" parent="VBoxContainer/GoogleSheetUrlForm"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "https://docs.google.com/spreadsheets/d/000000~~/edit#gid=000000000"
+
+[node name="CredentialJsonForm" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label_CredentionJsonPath" type="Label" parent="VBoxContainer/CredentialJsonForm"]
+clip_contents = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Credential.json Path"
+
+[node name="LineEdit_CredentialJsonPath" type="LineEdit" parent="VBoxContainer/CredentialJsonForm"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ExcelDownloadDirectoryForm" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label_ExcelDownloadDirectory" type="Label" parent="VBoxContainer/ExcelDownloadDirectoryForm"]
+clip_contents = true
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Downloaded Excel Path"
+
+[node name="LineEdit_ExcelDownloadDirectory" type="LineEdit" parent="VBoxContainer/ExcelDownloadDirectoryForm"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CreatedClassDirectoryForm" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label_CreatedClassDirectory" type="Label" parent="VBoxContainer/CreatedClassDirectoryForm"]
+clip_contents = true
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Generated Classes Path"
+
+[node name="LineEdit_CreatedClassDirectory" type="LineEdit" parent="VBoxContainer/CreatedClassDirectoryForm"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonDownloadGoogleSheet" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Download Google Sheet"
+
+[node name="ButtonGenerateClasses" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Generate Class Files"
+
+[node name="ButtonExportBinary" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Export Binary Files"
