@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 [Tool]
 [GlobalClass]
@@ -13,4 +12,6 @@ public partial class TabbySheetSettings : Resource
 	public string ExcelDownloadPath;
 	[Export]
 	public string ClassDirectoryPath;
+	[Export]
+	public string BinaryDirectoryPath;
 }

@@ -8,3 +8,4 @@ GoogleSheetURL = "https://docs.google.com/spreadsheets/d/000000~~/edit#gid=00000
 CredentialJsonPath = "res://addons/TabbySheet/credentials.json"
 ExcelDownloadPath = "res://addons/TabbySheet/ExcelSheets"
 ClassDirectoryPath = "res://addons/TabbySheet/DataTableBinary"
+BinaryDirectoryPath = "res://tableData"

@@ -1,9 +1,10 @@
 #if TOOLS
+using System.Reflection;
+using System.Text.Json;
 using Godot;
-using System;
 
 [Tool]
-public partial class TabbySheet : EditorPlugin
+public partial class TabbySheetPlugin : EditorPlugin
 {
 	private Control _dock;
 	

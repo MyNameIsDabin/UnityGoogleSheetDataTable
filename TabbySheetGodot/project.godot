@@ -10,22 +10,14 @@ config_version=5
 
 [application]
 
-config/name="TabbySheet"
-run/main_scene="res://addons/TabbySheet/TabbySheetDock.tscn"
+config/name="TabbySheetGodot"
+run/main_scene="res://Demo.tscn"
 config/features=PackedStringArray("4.3", "C#", "Mobile")
 config/icon="res://icon.svg"
 
-[display]
-
-window/size/viewport_width=500
-
 [dotnet]
 
-project/assembly_name="TabbySheet"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/TabbySheet/plugin.cfg")
+project/assembly_name="TabbySheetGodot"
 
 [rendering]
 

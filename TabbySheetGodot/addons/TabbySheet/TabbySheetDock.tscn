@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/TabbySheet/TabbySheetDock.cs" id="1_dmx2w"]
 
-[node name="TabbySheetDock" type="Control" node_paths=PackedStringArray("lineEditGoogleSheetUrl", "lineEditCredentialJsonPath", "lineEditExcelDownloadPath", "lineEditGenerateClassPath", "downloadButton", "generateClassesButton", "exportBinaryButton")]
+[node name="TabbySheetDock" type="Control" node_paths=PackedStringArray("lineEditGoogleSheetUrl", "lineEditCredentialJsonPath", "lineEditExcelDownloadPath", "lineEditGenerateClassPath", "lineEditBinaryDirecotryPath", "downloadButton", "generateClassesButton", "exportBinaryButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,6 +14,7 @@ lineEditGoogleSheetUrl = NodePath("VBoxContainer/GoogleSheetUrlForm/LineEdit_Goo
 lineEditCredentialJsonPath = NodePath("VBoxContainer/CredentialJsonForm/LineEdit_CredentialJsonPath")
 lineEditExcelDownloadPath = NodePath("VBoxContainer/ExcelDownloadDirectoryForm/LineEdit_ExcelDownloadDirectory")
 lineEditGenerateClassPath = NodePath("VBoxContainer/CreatedClassDirectoryForm/LineEdit_CreatedClassDirectory")
+lineEditBinaryDirecotryPath = NodePath("VBoxContainer/BinaryExportDirectoryForm/LineEdit_BinaryExportDirectory")
 downloadButton = NodePath("VBoxContainer/ButtonDownloadGoogleSheet")
 generateClassesButton = NodePath("VBoxContainer/ButtonGenerateClasses")
 exportBinaryButton = NodePath("VBoxContainer/ButtonExportBinary")
@@ -39,7 +40,7 @@ text = "Google Sheet URL"
 [node name="LineEdit_GoogleSheetUrl" type="LineEdit" parent="VBoxContainer/GoogleSheetUrlForm"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "https://docs.google.com/spreadsheets/d/000000~~/edit#gid=000000000"
+text = "https://docs.google.com/spreadsheets/d/1OEOGA9jDBZMqIzdfEAqatppSFXMMLX90bRxWUmcn440/edit?gid=0#gid=0"
 
 [node name="CredentialJsonForm" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -54,6 +55,7 @@ text = "Credential.json Path"
 [node name="LineEdit_CredentialJsonPath" type="LineEdit" parent="VBoxContainer/CredentialJsonForm"]
 layout_mode = 2
 size_flags_horizontal = 3
+text = "res://addons/TabbySheet/credentials.json"
 
 [node name="ExcelDownloadDirectoryForm" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -68,6 +70,7 @@ text = "Downloaded Excel Path"
 [node name="LineEdit_ExcelDownloadDirectory" type="LineEdit" parent="VBoxContainer/ExcelDownloadDirectoryForm"]
 layout_mode = 2
 size_flags_horizontal = 3
+text = "res://addons/TabbySheet/ExcelSheets"
 
 [node name="CreatedClassDirectoryForm" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -82,6 +85,22 @@ text = "Generated Classes Path"
 [node name="LineEdit_CreatedClassDirectory" type="LineEdit" parent="VBoxContainer/CreatedClassDirectoryForm"]
 layout_mode = 2
 size_flags_horizontal = 3
+text = "res://addons/TabbySheet/DataTableBinary"
+
+[node name="BinaryExportDirectoryForm" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label_BinaryExportDirectory" type="Label" parent="VBoxContainer/BinaryExportDirectoryForm"]
+clip_contents = true
+custom_minimum_size = Vector2(185, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Export Binary Path"
+
+[node name="LineEdit_BinaryExportDirectory" type="LineEdit" parent="VBoxContainer/BinaryExportDirectoryForm"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "res://tableData"
 
 [node name="ButtonDownloadGoogleSheet" type="Button" parent="VBoxContainer"]
 layout_mode = 2
